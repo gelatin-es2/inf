@@ -15,13 +15,17 @@
         .progress-bar { width: 0%; height: 100%; background: #ff0000; box-shadow: 0 0 10px #ff0000; transition: width 0.2s linear; }
 
         /* Overlay Estilo Vturb */
-        .sound-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
-        .sound-box { width: min(85%, 380px); background: rgba(107, 75, 182, 0.9); border: 2px solid rgba(255,255,255,0.4); border-radius: 16px; padding: 25px; text-align: center; color: #fff; animation: pulseBox 1.6s infinite; }
-        .sound-title { font-size: 19px; font-weight: 800; margin-bottom: 15px; }
-        .sound-icon { font-size: 50px; margin-bottom: 15px; }
-        .sound-cta { font-size: 17px; font-weight: 700; }
+        .sound-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
+        .sound-box { display: flex; align-items: center; gap: 10px; background: rgba(107, 75, 182, 0.95); border: 2px solid rgba(255,255,255,0.5); border-radius: 999px; padding: 10px 18px 10px 14px; color: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.35); animation: pulseBox 1.6s infinite; max-width: 90%; }
+        .sound-icon { font-size: 22px; line-height: 1; }
+        .sound-cta { font-size: 14px; font-weight: 700; line-height: 1.2; white-space: nowrap; }
 
-        @keyframes pulseBox { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes pulseBox { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+        @media (min-width: 480px) {
+            .sound-box { padding: 12px 22px 12px 18px; gap: 12px; }
+            .sound-icon { font-size: 26px; }
+            .sound-cta { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -32,9 +36,8 @@
 
     <div id="overlay" class="sound-overlay">
         <div class="sound-box">
-            <div class="sound-title">HAZ CLIC PARA ESCUCHAR</div>
             <div class="sound-icon">🔊</div>
-            <div class="sound-cta">👉 CLIC AQUÍ PARA ACTIVAR EL ÁUDIO 👈</div>
+            <div class="sound-cta">CLIC PARA ESCUCHAR</div>
         </div>
     </div>
 </div>
