@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSL Smart Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { margin: 0; background: #000; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; overflow: hidden; }
+        .video-wrapper { position: relative; width: 100%; height: 100%; background: #000; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Barra de Progresso Inteligente */
+        .progress-container { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: rgba(255,255,255,0.2); z-index: 20; }
+        .progress-bar { width: 0%; height: 100%; background: #ff0000; box-shadow: 0 0 10px #ff0000; transition: width 0.2s linear; }
+
+        /* Overlay Estilo Vturb */
+        .sound-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
+        .sound-box { width: min(85%, 380px); background: rgba(107, 75, 182, 0.9); border: 2px solid rgba(255,255,255,0.4); border-radius: 16px; padding: 25px; text-align: center; color: #fff; animation: pulseBox 1.6s infinite; }
+        .sound-title { font-size: 19px; font-weight: 800; margin-bottom: 15px; }
+        .sound-icon { font-size: 50px; margin-bottom: 15px; }
+        .sound-cta { font-size: 17px; font-weight: 700; }
+
+        @keyframes pulseBox { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div class="video-wrapper">
+    <div class="progress-container"><div id="bar" class="progress-bar"></div></div>
+    <video id="video" playsinline muted autoplay></video>
+
+    <div id="overlay" class="sound-overlay">
+        <div class="sound-box">
+            <div class="sound-title">HAZ CLIC PARA ESCUCHAR</div>
+            <div class="sound-icon">🔊</div>
+            <div class="sound-cta">👉 CLIC AQUÍ PARA ACTIVAR EL ÁUDIO 👈</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const src = params.get('src');
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('overlay');
+    const bar = document.getElementById('bar');
+
+    if (src) {
+        const isHls = /\.m3u8(\?|$)/i.test(src);
+
+        if (isHls) {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(src);
+                hls.attachMedia(video);
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = src;
+            }
+        } else {
+            video.src = src;
+        }
+        video.play();
+    }
+
+    // LÓGICA DE PROGRESSO INTELIGENTE (ACELERADO)
+    video.addEventListener('timeupdate', () => {
+        if (!video.duration) return;
+
+        let realPct = (video.currentTime / video.duration) * 100;
+        let fakePct;
+
+        if (realPct < 10) {
+            fakePct = realPct * 4;
+        } else {
+            fakePct = 40 + (realPct - 10) * (60 / 90);
+        }
+
+        bar.style.width = Math.min(fakePct, 99.8) + '%';
+    });
+
+    overlay.onclick = () => {
+        overlay.style.display = 'none';
+        video.muted = false;
+        video.currentTime = 0;
+        video.play();
+    };
+</script>
+</body>
+</html>
